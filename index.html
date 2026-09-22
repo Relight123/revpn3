@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Relight VPN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=2">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<!-- ======================= AURORA FIELD (decorative) ======================= -->
+<div class="aurora-field" aria-hidden="true">
+  <div class="aurora-blob blob-a"></div>
+  <div class="aurora-blob blob-b"></div>
+  <div class="aurora-blob blob-c"></div>
+</div>
+
+<!-- ======================= BOOT SCREEN ======================= -->
+<div id="boot" class="boot-screen">
+  <div class="boot-logo-wrap">
+    <svg class="boot-mark" viewBox="0 0 48 48" fill="none">
+      <path d="M24 4 L40 11 V23.5 C40 33.5 33 41 24 44 C15 41 8 33.5 8 23.5 V11 Z" fill="url(#gBootShieldGrad)" />
+      <path d="M24 6.5 L38 12.5 V23.5 C38 32.2 31.8 38.8 24 41.5 C16.2 38.8 10 32.2 10 23.5 V12.5 Z" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.5" pathLength="1" />
+      <path d="M17 24 L22 29 L32 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>
+      <defs>
+        <linearGradient id="gBootShieldGrad" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#4C7DFF"/>
+          <stop offset="100%" stop-color="#9B6BFF"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="boot-glow"></div>
+  </div>
+  <div class="boot-label">Relight VPN</div>
+  <div class="boot-dots"></div>
+</div>
+
+<!-- ======================= ERROR SCREEN ======================= -->
+<div id="errorScreen" class="error-screen hidden">
+  <div class="error-icon-box">
+    <svg class="error-icon" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 7v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="12" cy="16.5" r="1.2" fill="currentColor"/>
+    </svg>
+  </div>
+  <div class="error-title" id="errorTitle">Не удалось загрузить</div>
+  <p class="error-text" id="errorText">Проверьте соединение и попробуйте снова.</p>
+  <button class="btn btn-primary" id="retryBtn">
+    <svg viewBox="0 0 24 24" fill="none" class="btn-icon"><path d="M4 4v5h5M20 20v-5h-5M20 9A9 9 0 0 0 5.6 5.6L4 9M4 15a9 9 0 0 0 14.4 3.4l1.6-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Повторить</span>
+  </button>
+</div>
+
+<!-- ======================= APP ======================= -->
+<div id="app" class="app hidden">
+
+  <!-- APP BAR / TOP HEADER -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon-box">
+        <svg viewBox="0 0 24 24" fill="none" class="brand-mark">
+          <path d="M12 2.5 L20 6.2 V12.2 C20 17.5 16.5 21 12 22.5 C7.5 21 4 17.5 4 12.2 V6.2 Z" fill="url(#gHeaderShield)" />
+          <path d="M9 12.2 L11.2 14.5 L15.5 9.8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="gHeaderShield" x1="4" y1="2.5" x2="20" y2="22.5">
+              <stop offset="0%" stop-color="#4C7DFF"/>
+              <stop offset="100%" stop-color="#9B6BFF"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <span class="brand-title">Relight VPN</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="supportBtn" aria-label="Поддержка" title="Поддержка">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12c0 1.82.49 3.53 1.34 5L2 22l5.2-1.3c1.42.76 3.04 1.3 4.8 1.3 5.52 0 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.67z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN SCROLL CONTAINER -->
+  <main class="app-content" id="appContent">
+
+    <!-- ---------- OVERVIEW TAB ---------- -->
+    <section class="tab-panel" id="tab-overview" data-tab="overview">
+      
+      <!-- HERO CONNECTION CARD -->
+      <div class="tunnel-card" id="tunnelCard">
+        <div class="tunnel-header">
+          <span class="tunnel-label">Безопасный туннель</span>
+          <div class="tunnel-status">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">—</span>
+          </div>
+        </div>
+
+        <div class="tunnel-canvas">
+          <svg class="tunnel-svg" viewBox="0 0 300 80" fill="none">
+            <defs>
+              <linearGradient id="activeTrackGrad" x1="0" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#4C7DFF"/>
+                <stop offset="50%" stop-color="#9B6BFF"/>
+                <stop offset="100%" stop-color="#37D9A6"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Tunnel Path Background / Active -->
+            <path id="tunnelPath" d="M 36,40 Q 95,16 150,40 T 264,40" class="tunnel-line"/>
+            
+            <!-- Pulse Orb on Active -->
+            <circle r="4.5" class="tunnel-pulse" id="tunnelPulse">
+              <animateMotion dur="2.4s" repeatCount="indefinite" path="M 36,40 Q 95,16 150,40 T 264,40"/>
+            </circle>
+
+            <!-- Device Node (Left) -->
+            <g class="tunnel-node tunnel-node-left" transform="translate(36,40)">
+              <circle r="17" class="node-bg"/>
+              <rect x="-6" y="-8.5" width="12" height="17" rx="2.5" class="node-icon-stroke" stroke-width="1.6" fill="none"/>
+              <circle cy="4.8" r="1" class="node-icon-fill"/>
+            </g>
+
+            <!-- Google Security Shield Node (Center) -->
+            <g class="tunnel-node tunnel-node-mid" transform="translate(150,40)">
+              <circle r="19" class="node-bg node-bg-center"/>
+              <path d="M -6.5,-7.5 L 0,-10 L 6.5,-7.5 V 0.5 C 6.5,4.8 3.5,7.8 0,9 C -3.5,7.8 -6.5,4.8 -6.5,0.5 Z" class="node-icon-stroke" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+              <path d="M -2.5,0 L -0.5,2 L 3.2,-2.2" class="node-icon-stroke" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+
+            <!-- Global Web Node (Right) -->
+            <g class="tunnel-node tunnel-node-right" transform="translate(264,40)">
+              <circle r="17" class="node-bg"/>
+              <circle r="8" class="node-icon-stroke" stroke-width="1.5" fill="none"/>
+              <path d="M -8,0 H 8 M 0,-8 C 3,-4.5 3,4.5 0,8 C -3,4.5 -3,-4.5 0,-8" class="node-icon-stroke" stroke-width="1.3" fill="none"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="tunnel-footer-info">
+          <div class="tunnel-info-chip">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            <span>VLESS + Reality & Hy2</span>
+          </div>
+          <div class="tunnel-info-chip">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            <span>Германия (1 Гбит/с)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- METRIC CARDS ROW -->
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-icon-wrap stat-icon-blue">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+          </div>
+          <div class="stat-data">
+            <div class="stat-label">Действует до</div>
+            <div class="stat-value" id="expiryValue">—</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-wrap stat-icon-green">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg>
+          </div>
+          <div class="stat-data">
+            <div class="stat-label">Устройства</div>
+            <div class="stat-value" id="deviceCountValue">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA EXTEND PROMPT (Google Banner Style) -->
+      <button class="cta-card hidden" id="extendCta">
+        <div class="cta-leading-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="cta-text-group">
+          <div class="cta-title" id="extendCtaTitle">Продлить подписку</div>
+          <div class="cta-hint" id="extendCtaHint">Выберите тариф</div>
+        </div>
+        <div class="cta-trailing">
+          <span class="cta-pill-btn">Выбрать</span>
+        </div>
+      </button>
+
+      <!-- SECTION: QUICK ACCESS -->
+      <div class="section-header">
+        <div class="section-title">Быстрый доступ</div>
+      </div>
+      <div class="quick-list" id="quickDeviceList"></div>
+
+      <!-- ACCORDION: HOW TO CONNECT -->
+      <div class="accordion" id="instructionAccordion">
+        <button class="accordion-head" id="instructionToggle">
+          <div class="accordion-head-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="accordion-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-6h2v6zm0-8h-2V8h2v2z"/></svg>
+            <span>Как подключиться</span>
+          </div>
+          <div class="chev-wrap">
+            <svg viewBox="0 0 24 24" fill="none" class="chev"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </button>
+        <div class="accordion-body" id="instructionBody">
+          <div class="accordion-content-inner">
+            <ol class="steps">
+              <li>
+                <div class="step-num">1</div>
+                <div class="step-desc">
+                  <b>Установите приложение.</b>
+                  <div class="step-sub">Android — NekoBox или v2rayNG.<br>iOS — Streisand или ShadowRocket.<br>Windows/macOS — NekoRay, v2rayN или Stash.</div>
+                </div>
+              </li>
+              <li>
+                <div class="step-num">2</div>
+                <div class="step-desc">
+                  <b>Скопируйте ссылку подписки.</b>
+                  <div class="step-sub">Перейдите на вкладку «Устройства» и нажмите «Ключ».</div>
+                </div>
+              </li>
+              <li>
+                <div class="step-num">3</div>
+                <div class="step-desc">
+                  <b>Импортируйте её в приложение.</b>
+                  <div class="step-sub">Нажмите «+» и выберите «Импорт по URL / Подписка».</div>
+                </div>
+              </li>
+              <li>
+                <div class="step-num">4</div>
+                <div class="step-desc">
+                  <b>Готово к работе.</b>
+                  <div class="step-sub">Профиль называется «Relight VPN». При необходимости нажмите «Обновить подписку» в приложении.</div>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPPORT LINK ROW -->
+      <button class="link-row" id="supportRow">
+        <div class="link-row-left">
+          <div class="link-row-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
+          </div>
+          <span>Служба поддержки</span>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" class="link-arrow"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </section>
+
+    <!-- ---------- DEVICES TAB ---------- -->
+    <section class="tab-panel hidden" id="tab-devices" data-tab="devices">
+      <div class="devices-head">
+        <div class="devices-head-title">
+          <div class="section-title no-margin">Устройства</div>
+          <span class="device-badge-counter" id="deviceLimitLabel"></span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="openAddDevice">
+          <svg viewBox="0 0 24 24" fill="none" class="btn-icon"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <span>Добавить</span>
+        </button>
+      </div>
+      <div id="devicesList" class="devices-list"></div>
+    </section>
+
+    <!-- ---------- PLANS TAB ---------- -->
+    <section class="tab-panel hidden" id="tab-plans" data-tab="plans">
+      <div class="section-header">
+        <div class="section-title no-margin">Тарифные планы</div>
+      </div>
+      <div class="plans-list" id="plansList"></div>
+
+      <div class="section-header">
+        <div class="section-title">Активация промокода</div>
+      </div>
+      <div class="promo-card">
+        <div class="promo-box">
+          <div class="input-wrapper">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="input-icon"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.65-.5-.65C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>
+            <input id="promoInput" class="input mono" maxlength="30" placeholder="ПРОМОКОД (НАПР. VPN-ABC123)" autocapitalize="characters">
+          </div>
+          <button class="btn btn-primary" id="promoSubmit">Применить</button>
+        </div>
+        <div id="promoResult" class="promo-result hidden"></div>
+      </div>
+    </section>
+
+    <!-- ---------- REFERRAL TAB ---------- -->
+    <section class="tab-panel hidden" id="tab-referral" data-tab="referral">
+      <div class="ref-hero">
+        <div class="ref-hero-badge">Партнёрская программа</div>
+        <div class="ref-hero-value">50%</div>
+        <div class="ref-hero-title">Бонус за каждого друга</div>
+        <div class="ref-hero-hint">Получайте половину от дней подписки за каждого приглашённого пользователя при любой его оплате.</div>
+      </div>
+
+      <div class="stat-row stat-row-3">
+        <div class="stat-card">
+          <div class="stat-label">Всего друзей</div>
+          <div class="stat-value" id="refTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Активных</div>
+          <div class="stat-value" id="refActive">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Бонус (дней)</div>
+          <div class="stat-value stat-value-highlight" id="refBonus">—</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Ваша реферальная ссылка</div>
+      </div>
+      <div class="ref-link-card">
+        <div class="link-box">
+          <span id="refLinkText" class="mono truncate">—</span>
+          <button class="icon-btn icon-btn-tonal" id="copyRefLink" aria-label="Скопировать ссылку" title="Скопировать">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-primary btn-block" id="shareRefLink">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="btn-icon"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+          <span>Поделиться в Telegram</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MATERIAL 3 BOTTOM NAVIGATION BAR -->
+  <nav class="bottom-nav">
+    <div class="nav-indicator" id="navIndicator"></div>
+    <button class="nav-item active" data-tab="overview">
+      <div class="nav-icon-container">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      </div>
+      <span class="nav-label">Обзор</span>
+    </button>
+    <button class="nav-item" data-tab="devices">
+      <div class="nav-icon-container">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg>
+      </div>
+      <span class="nav-label">Устройства</span>
+    </button>
+    <button class="nav-item" data-tab="plans">
+      <div class="nav-icon-container">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+      </div>
+      <span class="nav-label">Тарифы</span>
+    </button>
+    <button class="nav-item" data-tab="referral">
+      <div class="nav-icon-container">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      </div>
+      <span class="nav-label">Партнёрка</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ======================= BOTTOM SHEETS & DIALOGS ======================= -->
+
+<!-- ADD DEVICE SHEET -->
+<div id="sheetOverlay" class="sheet-overlay">
+  <div class="sheet" id="addDeviceSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h3 class="sheet-title">Новое устройство</h3>
+      <p class="sheet-hint">Задайте имя, чтобы легко отличать конфигурации друг от друга.</p>
+    </div>
+    <div class="sheet-body">
+      <div class="input-field-group">
+        <label class="input-label" for="deviceNameInput">Название устройства</label>
+        <input id="deviceNameInput" class="input" maxlength="20" placeholder="Например: Google Pixel 8, Ноутбук">
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-outlined" id="cancelAddDevice">Отмена</button>
+      <button class="btn btn-primary" id="confirmAddDevice">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- KEY & QR CODE SHEET -->
+<div id="keySheetOverlay" class="sheet-overlay">
+  <div class="sheet sheet-tall" id="keySheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-badge">Конфигурация</div>
+      <h3 class="sheet-title" id="keySheetTitle">Ключ устройства</h3>
+    </div>
+    
+    <div class="qr-container-card">
+      <div class="qr-wrap"><div id="qrCode"></div></div>
+      <div class="qr-hint">Отсканируйте QR-код камерой приложения для быстрого подключения</div>
+    </div>
+
+    <div class="key-block">
+      <div class="key-label">Основная ссылка подписки (M3U / Auto)</div>
+      <div class="key-row">
+        <span class="mono truncate" id="keySubUrl">—</span>
+        <button class="icon-btn icon-btn-tonal" id="copySubUrl" aria-label="Скопировать ссылку" title="Скопировать">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ADVANCED MANUAL LINKS ACCORDION -->
+    <button class="accordion-head accordion-head-flat" id="manualLinksToggle">
+      <div class="accordion-head-title">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="accordion-subicon"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        <span>Ручные ссылки конфигураций</span>
+      </div>
+      <svg viewBox="0 0 24 24" fill="none" class="chev"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <div class="accordion-body" id="manualLinksBody">
+      <div class="manual-links-group">
+        <div class="key-block">
+          <div class="key-label">VLESS + Reality (🇩🇪 Германия)</div>
+          <div class="key-row">
+            <span class="mono truncate" id="keyVlessUrl">—</span>
+            <button class="icon-btn icon-btn-tonal" id="copyVless" aria-label="Скопировать VLESS" title="Скопировать">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="key-block">
+          <div class="key-label">Hysteria 2 (⚡ Ультраскорость)</div>
+          <div class="key-row">
+            <span class="mono truncate" id="keyHy2Url">—</span>
+            <button class="icon-btn icon-btn-tonal" id="copyHy2" aria-label="Скопировать Hysteria2" title="Скопировать">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-block btn-tonal" id="closeKeySheet">Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION MODAL SHEET -->
+<div id="confirmOverlay" class="sheet-overlay">
+  <div class="sheet" id="confirmSheet">
+    <div class="sheet-handle"></div>
+    <div class="confirm-icon-box">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+    </div>
+    <div class="sheet-header centered">
+      <h3 class="sheet-title" id="confirmTitle">Удалить устройство?</h3>
+      <p class="sheet-hint" id="confirmText"></p>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-outlined" id="confirmCancel">Отмена</button>
+      <button class="btn btn-danger" id="confirmOk">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOOGLE SNACKBAR / TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="app.js?v=2"></script>
+</body>
+</html>
